@@ -1,0 +1,101 @@
+.sk-form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.sk-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  background: #e4e5e0;
+  padding: 0.3rem;
+  border-radius: 999px;
+}
+
+.sk-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.55rem 0.6rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sk-toggle-btn.active {
+  background: var(--dark);
+  color: #fff;
+}
+
+.sk-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.sk-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.sk-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e6f4c6;
+  color: #3d6b0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sk-icon.learn {
+  background: #e4e5e0;
+  color: var(--text);
+}
+
+.sk-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-chip {
+  margin-bottom: 0;
+}
+
+.sk-remove {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sk-remove:hover {
+  color: var(--danger);
+  border-color: #ffd0d9;
+}

@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react'
+import { GraduationCap, BookOpen, Plus, X } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import './Skills.css'
+
+const LEVEL_LABELS = {
+  beginner: 'Beginner',
+  intermediate: 'Intermediate',
+  expert: 'Expert',
+}
 
 function Skills({ session }) {
   const [skills, setSkills] = useState([])
@@ -57,60 +65,118 @@ function Skills({ session }) {
   const offered = skills.filter((s) => s.type === 'offer')
   const wanted = skills.filter((s) => s.type === 'learn')
 
-  if (loading) return <p style={{ padding: '2rem', fontFamily: 'sans-serif' }}>Loading skills...</p>
+  if (loading) return <p className="muted">Loading skills...</p>
 
   return (
-    <div style={{ maxWidth: '480px', margin: '3rem auto', fontFamily: 'sans-serif' }}>
-      <h2>Your skills</h2>
+    <div>
+      <div className="card">
+        <h2 style={{ margin: 0 }}>Your skills</h2>
+        <p className="muted" style={{ margin: '0.25rem 0 0' }}>
+          Tell the hive what you can teach and what you want to learn.
+        </p>
+      </div>
 
-      <form onSubmit={handleAdd} style={{ display: 'grid', gap: '0.75rem' }}>
-        <input
-          type="text"
-          placeholder="Skill name (e.g. Guitar, Excel, Cooking)"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          maxLength={60}
-        />
-        <select value={type} onChange={(e) => setType(e.target.value)}>
-          <option value="offer">I can teach this</option>
-          <option value="learn">I want to learn this</option>
-        </select>
-        {type === 'offer' && (
-          <select value={level} onChange={(e) => setLevel(e.target.value)}>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="expert">Expert</option>
-          </select>
-        )}
-        <button type="submit" disabled={saving}>
-          {saving ? 'Adding...' : 'Add skill'}
-        </button>
-      </form>
+      <div className="card">
+        <h3>Add a skill</h3>
+        <form className="sk-form" onSubmit={handleAdd}>
+          <div className="sk-toggle">
+            <button
+              type="button"
+              className={'sk-toggle-btn' + (type === 'offer' ? ' active' : '')}
+              onClick={() => setType('offer')}
+            >
+              <GraduationCap size={16} /> I can teach
+            </button>
+            <button
+              type="button"
+              className={'sk-toggle-btn' + (type === 'learn' ? ' active' : '')}
+              onClick={() => setType('learn')}
+            >
+              <BookOpen size={16} /> I want to learn
+            </button>
+          </div>
 
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+          <input
+            type="text"
+            placeholder="Skill name (e.g. Guitar, Excel, Cooking)"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            maxLength={60}
+          />
 
-      <h3>I can teach</h3>
-      {offered.length === 0 && <p style={{ color: 'gray' }}>Nothing added yet.</p>}
-      <ul>
-        {offered.map((s) => (
-          <li key={s.id}>
-            {s.name} ({s.level}){' '}
-            <button onClick={() => handleDelete(s.id)}>Remove</button>
-          </li>
-        ))}
-      </ul>
+          {type === 'offer' && (
+            <select value={level} onChange={(e) => setLevel(e.target.value)}>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="expert">Expert</option>
+            </select>
+          )}
 
-      <h3>I want to learn</h3>
-      {wanted.length === 0 && <p style={{ color: 'gray' }}>Nothing added yet.</p>}
-      <ul>
-        {wanted.map((s) => (
-          <li key={s.id}>
-            {s.name}{' '}
-            <button onClick={() => handleDelete(s.id)}>Remove</button>
-          </li>
-        ))}
-      </ul>
+          <button className="btn btn-primary sk-add" type="submit" disabled={saving}>
+            <Plus size={16} /> {saving ? 'Adding...' : 'Add skill'}
+          </button>
+
+          {error && <span className="error-text">{error}</span>}
+        </form>
+      </div>
+
+      <div className="section-title">
+        <span>I can teach</span>
+        <span className="muted">{offered.length}</span>
+      </div>
+
+      {offered.length === 0 && (
+        <div className="card">
+          <p className="muted" style={{ margin: 0 }}>Nothing added yet.</p>
+        </div>
+      )}
+
+      {offered.map((s) => (
+        <div key={s.id} className="sk-row">
+          <div className="sk-icon">
+            <GraduationCap size={18} />
+          </div>
+          <div className="sk-name">{s.name}</div>
+          {s.level && <span className="chip sk-chip">{LEVEL_LABELS[s.level]}</span>}
+          <button
+            className="sk-remove"
+            onClick={() => handleDelete(s.id)}
+            aria-label={'Remove ' + s.name}
+            title="Remove"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
+
+      <div className="section-title">
+        <span>I want to learn</span>
+        <span className="muted">{wanted.length}</span>
+      </div>
+
+      {wanted.length === 0 && (
+        <div className="card">
+          <p className="muted" style={{ margin: 0 }}>Nothing added yet.</p>
+        </div>
+      )}
+
+      {wanted.map((s) => (
+        <div key={s.id} className="sk-row">
+          <div className="sk-icon learn">
+            <BookOpen size={18} />
+          </div>
+          <div className="sk-name">{s.name}</div>
+          <button
+            className="sk-remove"
+            onClick={() => handleDelete(s.id)}
+            aria-label={'Remove ' + s.name}
+            title="Remove"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
     </div>
   )
 }

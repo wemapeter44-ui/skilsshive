@@ -1,0 +1,112 @@
+.pf-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pf-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.pf-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.pf-sub {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.pf-credits {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+
+.pf-credits .big-number {
+  font-size: 2.6rem;
+}
+
+.pf-credits-label {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.pf-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.pf-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.pf-field label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.pf-readonly {
+  background: #ececE8;
+  color: var(--muted);
+}
+
+.pf-counter {
+  text-align: right;
+}
+
+.pf-history-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.pf-history-row:last-child {
+  border-bottom: none;
+}
+
+.pf-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e6f4c6;
+  color: #3d6b0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pf-history-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.pf-history-title {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.pf-amount {
+  font-weight: 800;
+  color: var(--lime-3);
+  white-space: nowrap;
+}

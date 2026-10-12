@@ -1,12 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ArrowUpRight, Heart, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import StatTiles from '../components/StatTiles'
 
 function Home({ session }) {
   const [posts, setPosts] = useState([])
+  const [me, setMe] = useState(null)
   const [drafts, setDrafts] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  async function loadMe() {
+    const { data } = await supabase
+      .from('profiles')
+      .select('username, credits')
+      .eq('id', session.user.id)
+      .single()
+    setMe(data)
+  }
 
   async function loadPosts() {
     const { data, error } = await supabase
@@ -27,6 +39,7 @@ function Home({ session }) {
   }
 
   useEffect(() => {
+    loadMe()
     loadPosts()
   }, [])
 
@@ -82,74 +95,97 @@ function Home({ session }) {
     else await loadPosts()
   }
 
-  if (loading) return <p style={{ padding: '2rem', fontFamily: 'sans-serif' }}>Loading feed...</p>
+  if (loading) return <p className="muted">Loading feed...</p>
 
   return (
-    <div style={{ maxWidth: '600px', margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h2>The hive feed 🐝</h2>
+    <div>
+      <div className="hero-card">
+        <div className="hero-top">
+          <span>Your hive credits</span>
+          <Link to="/profile" className="hero-link" title="See your credit history">
+            <ArrowUpRight size={18} />
+          </Link>
+        </div>
+        <div className="big-number">🍯 {me ? me.credits : '...'}</div>
+        <div className="hero-sub">
+          {me ? `Welcome back, ${me.username}` : 'Loading your profile...'}
+        </div>
+      </div>
 
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+      <StatTiles userId={session.user.id} credits={me?.credits} />
+
+      <div className="section-title">
+        <span>The hive feed</span>
+        <Link to="/create" className="btn btn-primary">+ New post</Link>
+      </div>
+
+      {error && <p className="error-text">{error}</p>}
 
       {posts.length === 0 && (
-        <p style={{ color: 'gray' }}>
-          No posts yet. <Link to="/create">Be the first to share something!</Link>
-        </p>
+        <div className="card">
+          <p className="muted" style={{ margin: 0 }}>
+            No posts yet. <Link to="/create"><strong>Be the first to share something!</strong></Link>
+          </p>
+        </div>
       )}
 
       {posts.map((post) => {
         const likedByMe = post.likes.some((l) => l.user_id === session.user.id)
+        const author = post.profiles?.username || 'unknown'
 
         return (
-          <div
-            key={post.id}
-            style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}
-          >
-            <h3 style={{ margin: '0 0 0.25rem' }}>{post.title}</h3>
-            <small style={{ color: 'gray' }}>
-              by <strong>{post.profiles?.username || 'unknown'}</strong> ·{' '}
-              {new Date(post.created_at).toLocaleString()}
-              {post.skill_tag && <> · 🏷️ {post.skill_tag}</>}
-            </small>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
+          <div key={post.id} className="card">
+            <div className="post-head">
+              <div className="avatar">{author.charAt(0)}</div>
+              <div>
+                <div className="post-author">{author}</div>
+                <div className="muted">{new Date(post.created_at).toLocaleString()}</div>
+              </div>
+            </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <button onClick={() => handleLike(post)}>
-                {likedByMe ? '❤️ Liked' : '🤍 Like'}
+            <h3 className="post-title">{post.title}</h3>
+            {post.skill_tag && <span className="chip">{post.skill_tag}</span>}
+            <p className="post-body">{post.content}</p>
+
+            <div className="action-row">
+              <button
+                className={'icon-btn' + (likedByMe ? ' liked' : '')}
+                onClick={() => handleLike(post)}
+              >
+                <Heart size={16} fill={likedByMe ? 'currentColor' : 'none'} />
+                {post.likes.length}
               </button>
-              <span>{post.likes.length}</span>
 
               {post.user_id === session.user.id && (
-                <button onClick={() => handleDelete(post.id)} style={{ marginLeft: 'auto' }}>
-                  Delete my post
+                <button className="icon-btn danger" onClick={() => handleDelete(post.id)}>
+                  <Trash2 size={16} /> Delete
                 </button>
               )}
             </div>
 
-            <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '0.75rem' }}>
+            <div className="comments">
               <strong>Comments ({post.comments.length})</strong>
 
               {post.comments.map((c) => (
-                <div key={c.id} style={{ margin: '0.5rem 0', fontSize: '0.95rem' }}>
-                  <strong>{c.profiles?.username || 'unknown'}</strong>: {c.content}{' '}
+                <div key={c.id} className="comment">
+                  <span>
+                    <strong>{c.profiles?.username || 'unknown'}</strong> {c.content}
+                  </span>
                   {c.user_id === session.user.id && (
-                    <button onClick={() => handleDeleteComment(c.id)}>✕</button>
+                    <button className="comment-x" onClick={() => handleDeleteComment(c.id)}>✕</button>
                   )}
                 </div>
               ))}
 
-              <form
-                onSubmit={(e) => handleComment(e, post.id)}
-                style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}
-              >
+              <form className="comment-form" onSubmit={(e) => handleComment(e, post.id)}>
                 <input
                   type="text"
                   placeholder="Write a comment..."
                   value={drafts[post.id] || ''}
                   onChange={(e) => setDrafts({ ...drafts, [post.id]: e.target.value })}
                   maxLength={500}
-                  style={{ flex: 1 }}
                 />
-                <button type="submit">Send</button>
+                <button className="btn btn-primary" type="submit">Send</button>
               </form>
             </div>
           </div>

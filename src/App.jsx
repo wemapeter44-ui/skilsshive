@@ -8,6 +8,7 @@ import Profile from './pages/Profile'
 import Skills from './pages/Skills'
 import CreatePost from './pages/CreatePost'
 import Leaderboard from './pages/Leaderboard'
+import BottomNav from './components/BottomNav'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -31,40 +32,37 @@ function App() {
   }
 
   if (loadingSession) {
-    return <p style={{ padding: '2rem', fontFamily: 'sans-serif' }}>Loading...</p>
+    return <p style={{ padding: '2rem' }}>Loading...</p>
   }
 
   return (
     <div>
-      <nav style={{ display: 'flex', gap: '1rem', padding: '1rem', fontFamily: 'sans-serif' }}>
-        <strong>SkillHive 🐝</strong>
+      <header className="top-bar">
+        <span className="brand">SkillHive 🐝</span>
         {session ? (
-          <>
-            <Link to="/home">Home</Link>
-            <Link to="/create">New post</Link>
-            <Link to="/leaderboard">Leaderboard</Link>
-            <Link to="/profile">Profile</Link>
-            <Link to="/skills">Skills</Link>
-            <button onClick={handleLogout}>Log out</button>
-          </>
+          <button className="btn" onClick={handleLogout}>Log out</button>
         ) : (
-          <>
-            <Link to="/login">Log in</Link>
-            <Link to="/signup">Sign up</Link>
-          </>
+          <div className="top-links">
+            <Link className="btn" to="/login">Log in</Link>
+            <Link className="btn btn-primary" to="/signup">Sign up</Link>
+          </div>
         )}
-      </nav>
+      </header>
 
-      <Routes>
-        <Route path="/" element={<Navigate to={session ? '/home' : '/login'} replace />} />
-        <Route path="/login" element={session ? <Navigate to="/home" replace /> : <Login />} />
-        <Route path="/signup" element={session ? <Navigate to="/home" replace /> : <Signup />} />
-        <Route path="/home" element={session ? <Home session={session} /> : <Navigate to="/login" replace />} />
-        <Route path="/create" element={session ? <CreatePost session={session} /> : <Navigate to="/login" replace />} />
-        <Route path="/leaderboard" element={session ? <Leaderboard session={session} /> : <Navigate to="/login" replace />} />
-        <Route path="/profile" element={session ? <Profile session={session} /> : <Navigate to="/login" replace />} />
-        <Route path="/skills" element={session ? <Skills session={session} /> : <Navigate to="/login" replace />} />
-      </Routes>
+      <main className="page">
+        <Routes>
+          <Route path="/" element={<Navigate to={session ? '/home' : '/login'} replace />} />
+          <Route path="/login" element={session ? <Navigate to="/home" replace /> : <Login />} />
+          <Route path="/signup" element={session ? <Navigate to="/home" replace /> : <Signup />} />
+          <Route path="/home" element={session ? <Home session={session} /> : <Navigate to="/login" replace />} />
+          <Route path="/create" element={session ? <CreatePost session={session} /> : <Navigate to="/login" replace />} />
+          <Route path="/leaderboard" element={session ? <Leaderboard session={session} /> : <Navigate to="/login" replace />} />
+          <Route path="/profile" element={session ? <Profile session={session} /> : <Navigate to="/login" replace />} />
+          <Route path="/skills" element={session ? <Skills session={session} /> : <Navigate to="/login" replace />} />
+        </Routes>
+      </main>
+
+      {session && <BottomNav />}
     </div>
   )
 }

@@ -1,0 +1,85 @@
+.lb-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lb-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.lb-search {
+  position: relative;
+}
+
+.lb-search input {
+  padding-left: 2.4rem;
+}
+
+.lb-search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 2rem 38px 1fr auto;
+  align-items: center;
+  column-gap: 0.75rem;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.lb-row.me {
+  background: linear-gradient(160deg, #e8f7bd, #cdeb85);
+}
+
+.lb-rank {
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+.lb-info {
+  min-width: 0;
+}
+
+.lb-name {
+  font-weight: 700;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-credits {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lb-bar {
+  grid-column: 3 / 5;
+  height: 8px;
+  background: #e2e3de;
+  border-radius: 999px;
+  margin-top: 0.55rem;
+  overflow: hidden;
+}
+
+.lb-row.me .lb-bar {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.lb-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--lime-2), var(--lime-3));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}

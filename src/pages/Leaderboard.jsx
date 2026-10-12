@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Search } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import './Leaderboard.css'
 
 function Leaderboard({ session }) {
   const [rows, setRows] = useState([])
@@ -40,46 +42,57 @@ function Leaderboard({ session }) {
     return rank
   }
 
+  // The leader's credits are the 100% mark for every bar
+  const topCredits = rows.length > 0 ? rows[0].credits : 0
+
   return (
-    <div style={{ maxWidth: '520px', margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h2>Hive leaderboard 🏆</h2>
+    <div>
+      <div className="card lb-header">
+        <h2>Hive leaderboard 🏆</h2>
+        <span className="muted">
+          Top members by credits. Filter by country, or leave it empty for the whole world.
+        </span>
+        <div className="lb-search">
+          <Search size={16} className="lb-search-icon" />
+          <input
+            type="text"
+            placeholder="Country (e.g. Kenya)"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Filter by country (e.g. Kenya), or leave empty for the world"
-        value={country}
-        onChange={(e) => setCountry(e.target.value)}
-        style={{ width: '100%', marginBottom: '1rem' }}
-      />
-
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
-      {loading && <p>Loading...</p>}
+      {error && <p className="error-text">{error}</p>}
+      {loading && <p className="muted">Loading...</p>}
 
       {!loading && rows.length === 0 && (
-        <p style={{ color: 'gray' }}>No one on the board yet. Share a post to earn credits!</p>
+        <div className="card">
+          <p className="muted" style={{ margin: 0 }}>
+            No one on the board yet. Share a post to earn credits!
+          </p>
+        </div>
       )}
 
-      <ol style={{ listStyle: 'none', padding: 0 }}>
-        {rows.map((r, i) => (
-          <li
-            key={r.id}
-            style={{
-              display: 'flex',
-              gap: '1rem',
-              padding: '0.6rem 0.75rem',
-              borderBottom: '1px solid #eee',
-              background: r.id === session.user.id ? '#fff8dc' : 'transparent',
-            }}
-          >
-            <span style={{ width: '2rem' }}>{medal(i + 1)}</span>
-            <span style={{ flex: 1 }}>
-              <strong>{r.username}</strong>
-              {r.country && <small style={{ color: 'gray' }}> · {r.country}</small>}
-            </span>
-            <span>🍯 {r.credits}</span>
-          </li>
-        ))}
-      </ol>
+      {rows.map((r, i) => {
+        const percent = topCredits > 0 ? Math.max(4, Math.round((r.credits / topCredits) * 100)) : 0
+
+        return (
+          <div key={r.id} className={'lb-row' + (r.id === session.user.id ? ' me' : '')}>
+            <span className="lb-rank">{medal(i + 1)}</span>
+            <div className="avatar">{r.username.charAt(0)}</div>
+            <div className="lb-info">
+              <div className="lb-name">{r.username}</div>
+              <div className="muted">{r.country || 'No country set'}</div>
+            </div>
+            <span className="lb-credits">🍯 {r.credits}</span>
+
+            <div className="lb-bar">
+              <div className="lb-bar-fill" style={{ width: percent + '%' }} />
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

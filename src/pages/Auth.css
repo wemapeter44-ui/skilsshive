@@ -1,0 +1,69 @@
+.au-hero-title {
+  margin: 0.6rem 0 0.4rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.au-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.au-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.au-field label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.au-password {
+  position: relative;
+}
+
+.au-password input {
+  padding-right: 2.8rem;
+}
+
+.au-eye {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.au-eye:hover {
+  color: var(--text);
+}
+
+.au-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.1rem;
+}
+
+.au-switch {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.au-switch strong {
+  color: var(--text);
+}

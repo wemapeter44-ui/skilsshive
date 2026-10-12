@@ -1,0 +1,62 @@
+.cp-hero-text {
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.cp-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.cp-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.cp-field label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.cp-counter {
+  text-align: right;
+}
+
+.cp-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cp-suggest {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cp-suggest:hover {
+  background: #f1f7e0;
+}
+
+.cp-suggest.active {
+  background: #e6f4c6;
+  border-color: var(--lime-2);
+  color: #3d6b0a;
+}
+
+.cp-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.1rem;
+}
