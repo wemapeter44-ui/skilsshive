@@ -1,193 +1,124 @@
-import { useEffect, useState } from 'react'
-import { GraduationCap, BookOpen, Plus, X } from 'lucide-react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Eye, EyeOff, UserPlus } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
-import { useToast } from '../components/ToastProvider'
-import './Skills.css'
+import './Auth.css'
 
-const LEVEL_LABELS = {
-  beginner: 'Beginner',
-  intermediate: 'Intermediate',
-  expert: 'Expert',
-}
-
-function Skills({ session }) {
-  const [skills, setSkills] = useState([])
-  const [name, setName] = useState('')
-  const [type, setType] = useState('offer')
-  const [level, setLevel] = useState('beginner')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+function Signup() {
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const showToast = useToast()
 
-  async function loadSkills() {
-    const { data, error } = await supabase
-      .from('skills')
-      .select('id, name, type, level')
-      .eq('user_id', session.user.id)
-      .order('created_at', { ascending: false })
-
-    if (error) setError(error.message)
-    else setSkills(data)
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    loadSkills()
-  }, [])
-
-  async function handleAdd(e) {
+  async function handleSignup(e) {
     e.preventDefault()
-    setSaving(true)
+    setLoading(true)
     setError('')
+    setMessage('')
 
-    const skillName = name.trim()
-
-    const { error } = await supabase.from('skills').insert({
-      user_id: session.user.id,
-      name: skillName,
-      type,
-      level: type === 'offer' ? level : null,
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username: username.trim().toLowerCase() },
+      },
     })
 
     if (error) {
       setError(error.message)
     } else {
-      setName('')
-      showToast('Added ' + skillName)
-      await loadSkills()
+      setMessage('Account created! You are now signed up.')
+      setUsername('')
+      setEmail('')
+      setPassword('')
     }
-    setSaving(false)
+    setLoading(false)
   }
-
-  async function handleDelete(id) {
-    setError('')
-    const { error } = await supabase.from('skills').delete().eq('id', id)
-    if (error) {
-      setError(error.message)
-    } else {
-      showToast('Skill removed')
-      await loadSkills()
-    }
-  }
-
-  const offered = skills.filter((s) => s.type === 'offer')
-  const wanted = skills.filter((s) => s.type === 'learn')
-
-  if (loading) return <p className="muted">Loading skills...</p>
 
   return (
     <div>
-      <div className="card">
-        <h2 style={{ margin: 0 }}>Your skills</h2>
-        <p className="muted" style={{ margin: '0.25rem 0 0' }}>
-          Tell the hive what you can teach and what you want to learn.
-        </p>
+      <div className="hero-card">
+        <div className="hero-top">
+          <span>Join the hive</span>
+        </div>
+        <div className="au-hero-title">Share what you know. Learn what you love.</div>
+        <div className="hero-sub">Create a free account to start earning hive credits.</div>
       </div>
 
       <div className="card">
-        <h3>Add a skill</h3>
-        <form className="sk-form" onSubmit={handleAdd}>
-          <div className="sk-toggle">
-            <button
-              type="button"
-              className={'sk-toggle-btn' + (type === 'offer' ? ' active' : '')}
-              onClick={() => setType('offer')}
-            >
-              <GraduationCap size={16} /> I can teach
-            </button>
-            <button
-              type="button"
-              className={'sk-toggle-btn' + (type === 'learn' ? ' active' : '')}
-              onClick={() => setType('learn')}
-            >
-              <BookOpen size={16} /> I want to learn
-            </button>
+        <form className="au-form" onSubmit={handleSignup}>
+          <div className="au-field">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              placeholder="e.g. peter_codes"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              minLength={3}
+              maxLength={20}
+              pattern="[A-Za-z0-9_]+"
+              title="3 to 20 characters: letters, numbers, and underscores only"
+              autoComplete="username"
+            />
+            <span className="muted">3 to 20 characters: letters, numbers, and underscores.</span>
           </div>
 
-          <input
-            type="text"
-            placeholder="Skill name (e.g. Guitar, Excel, Cooking)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            maxLength={60}
-          />
+          <div className="au-field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+            />
+          </div>
 
-          {type === 'offer' && (
-            <select value={level} onChange={(e) => setLevel(e.target.value)}>
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="expert">Expert</option>
-            </select>
-          )}
+          <div className="au-field">
+            <label htmlFor="password">Password</label>
+            <div className="au-password">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="At least 6 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="au-eye"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-          <button className="btn btn-primary sk-add" type="submit" disabled={saving}>
-            <Plus size={16} /> {saving ? 'Adding...' : 'Add skill'}
+          <button className="btn btn-primary au-submit" type="submit" disabled={loading}>
+            <UserPlus size={16} /> {loading ? 'Creating account...' : 'Create account'}
           </button>
 
           {error && <span className="error-text">{error}</span>}
+          {message && <span className="success-text">{message}</span>}
         </form>
       </div>
 
-      <div className="section-title">
-        <span>I can teach</span>
-        <span className="muted">{offered.length}</span>
-      </div>
-
-      {offered.length === 0 && (
-        <div className="card">
-          <p className="muted" style={{ margin: 0 }}>Nothing added yet.</p>
-        </div>
-      )}
-
-      {offered.map((s) => (
-        <div key={s.id} className="sk-row">
-          <div className="sk-icon">
-            <GraduationCap size={18} />
-          </div>
-          <div className="sk-name">{s.name}</div>
-          {s.level && <span className="chip sk-chip">{LEVEL_LABELS[s.level]}</span>}
-          <button
-            className="sk-remove"
-            onClick={() => handleDelete(s.id)}
-            aria-label={'Remove ' + s.name}
-            title="Remove"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      ))}
-
-      <div className="section-title">
-        <span>I want to learn</span>
-        <span className="muted">{wanted.length}</span>
-      </div>
-
-      {wanted.length === 0 && (
-        <div className="card">
-          <p className="muted" style={{ margin: 0 }}>Nothing added yet.</p>
-        </div>
-      )}
-
-      {wanted.map((s) => (
-        <div key={s.id} className="sk-row">
-          <div className="sk-icon learn">
-            <BookOpen size={18} />
-          </div>
-          <div className="sk-name">{s.name}</div>
-          <button
-            className="sk-remove"
-            onClick={() => handleDelete(s.id)}
-            aria-label={'Remove ' + s.name}
-            title="Remove"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      ))}
+      <p className="au-switch muted">
+        Already a member? <Link to="/login"><strong>Log in</strong></Link>
+      </p>
     </div>
   )
 }
 
-export default Skills
+export default Signup
