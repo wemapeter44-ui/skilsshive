@@ -9,6 +9,12 @@
   font-size: 1.4rem;
 }
 
+.lb-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .lb-search {
   position: relative;
 }
@@ -42,9 +48,31 @@
 }
 
 .lb-rank {
-  font-weight: 700;
-  font-size: 1.05rem;
-  text-align: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: #e4e5e0;
+  color: var(--text);
+}
+
+.lb-rank.gold {
+  background: linear-gradient(160deg, #ffe58a, #f0b429);
+  color: #6b4a00;
+}
+
+.lb-rank.silver {
+  background: linear-gradient(160deg, #f1f3f5, #b8bec6);
+  color: #41474f;
+}
+
+.lb-rank.bronze {
+  background: linear-gradient(160deg, #f3c9a0, #c98a52);
+  color: #5c3414;
 }
 
 .lb-info {
@@ -60,6 +88,9 @@
 }
 
 .lb-credits {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-weight: 700;
   white-space: nowrap;
 }

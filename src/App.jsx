@@ -9,6 +9,7 @@ import Skills from './pages/Skills'
 import CreatePost from './pages/CreatePost'
 import Leaderboard from './pages/Leaderboard'
 import BottomNav from './components/BottomNav'
+import Logo from './components/Logo'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -38,7 +39,9 @@ function App() {
   return (
     <div>
       <header className="top-bar">
-        <span className="brand">SkillHive 🐝</span>
+        <Link to="/" className="brand" aria-label="SkillHive home">
+          <Logo />
+        </Link>
         {session ? (
           <button className="btn" onClick={handleLogout}>Log out</button>
         ) : (

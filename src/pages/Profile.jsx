@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FileText, Heart, MessageCircle, Coins } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import { useToast } from '../components/ToastProvider'
 import './Profile.css'
 
 const REASONS = {
@@ -19,8 +20,8 @@ function Profile({ session }) {
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const showToast = useToast()
 
   useEffect(() => {
     async function loadProfile() {
@@ -61,8 +62,6 @@ function Profile({ session }) {
   async function handleSave(e) {
     e.preventDefault()
     setSaving(true)
-    setError('')
-    setMessage('')
 
     const { error } = await supabase
       .from('profiles')
@@ -73,8 +72,8 @@ function Profile({ session }) {
       })
       .eq('id', session.user.id)
 
-    if (error) setError(error.message)
-    else setMessage('Profile saved')
+    if (error) showToast(error.message, 'error')
+    else showToast('Profile saved')
     setSaving(false)
   }
 
@@ -89,8 +88,8 @@ function Profile({ session }) {
             <div className="pf-name">{fullName || username}</div>
             <div className="pf-sub">
               @{username}
-              {country && ` · ${country}`}
-              {memberSince && ` · Joined ${memberSince}`}
+              {country && ` \u00b7 ${country}`}
+              {memberSince && ` \u00b7 Joined ${memberSince}`}
             </div>
           </div>
         </div>
@@ -100,6 +99,8 @@ function Profile({ session }) {
           <span className="pf-credits-label">hive credits</span>
         </div>
       </div>
+
+      {error && <p className="error-text">{error}</p>}
 
       <div className="card">
         <h3>Edit profile</h3>
@@ -149,9 +150,6 @@ function Profile({ session }) {
           <button className="btn btn-primary" type="submit" disabled={saving}>
             {saving ? 'Saving...' : 'Save profile'}
           </button>
-
-          {error && <span className="error-text">{error}</span>}
-          {message && <span className="success-text">{message}</span>}
         </form>
       </div>
 

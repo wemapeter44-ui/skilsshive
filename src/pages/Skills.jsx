@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GraduationCap, BookOpen, Plus, X } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import { useToast } from '../components/ToastProvider'
 import './Skills.css'
 
 const LEVEL_LABELS = {
@@ -17,6 +18,7 @@ function Skills({ session }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const showToast = useToast()
 
   async function loadSkills() {
     const { data, error } = await supabase
@@ -39,9 +41,11 @@ function Skills({ session }) {
     setSaving(true)
     setError('')
 
+    const skillName = name.trim()
+
     const { error } = await supabase.from('skills').insert({
       user_id: session.user.id,
-      name: name.trim(),
+      name: skillName,
       type,
       level: type === 'offer' ? level : null,
     })
@@ -50,6 +54,7 @@ function Skills({ session }) {
       setError(error.message)
     } else {
       setName('')
+      showToast('Added ' + skillName)
       await loadSkills()
     }
     setSaving(false)
@@ -58,8 +63,12 @@ function Skills({ session }) {
   async function handleDelete(id) {
     setError('')
     const { error } = await supabase.from('skills').delete().eq('id', id)
-    if (error) setError(error.message)
-    else await loadSkills()
+    if (error) {
+      setError(error.message)
+    } else {
+      showToast('Skill removed')
+      await loadSkills()
+    }
   }
 
   const offered = skills.filter((s) => s.type === 'offer')

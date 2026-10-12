@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Send } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import { useToast } from '../components/ToastProvider'
 import './CreatePost.css'
 
 function CreatePost({ session }) {
@@ -12,6 +13,7 @@ function CreatePost({ session }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const showToast = useToast()
 
   useEffect(() => {
     async function loadMySkills() {
@@ -44,6 +46,7 @@ function CreatePost({ session }) {
       setError(error.message)
       setSaving(false)
     } else {
+      showToast('Post published')
       navigate('/home')
     }
   }

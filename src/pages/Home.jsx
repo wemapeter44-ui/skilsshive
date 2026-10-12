@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Heart, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import StatTiles from '../components/StatTiles'
+import CreditIcon from '../components/CreditIcon'
+import { FeedSkeleton } from '../components/Skeleton'
 
 function Home({ session }) {
   const [posts, setPosts] = useState([])
@@ -95,7 +97,7 @@ function Home({ session }) {
     else await loadPosts()
   }
 
-  if (loading) return <p className="muted">Loading feed...</p>
+  if (loading) return <FeedSkeleton />
 
   return (
     <div>
@@ -106,7 +108,10 @@ function Home({ session }) {
             <ArrowUpRight size={18} />
           </Link>
         </div>
-        <div className="big-number">🍯 {me ? me.credits : '...'}</div>
+        <div className="big-number" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <CreditIcon size={36} />
+          {me ? me.credits : '...'}
+        </div>
         <div className="hero-sub">
           {me ? `Welcome back, ${me.username}` : 'Loading your profile...'}
         </div>
@@ -172,7 +177,7 @@ function Home({ session }) {
                     <strong>{c.profiles?.username || 'unknown'}</strong> {c.content}
                   </span>
                   {c.user_id === session.user.id && (
-                    <button className="comment-x" onClick={() => handleDeleteComment(c.id)}>✕</button>
+                    <button className="comment-x" onClick={() => handleDeleteComment(c.id)}>x</button>
                   )}
                 </div>
               ))}

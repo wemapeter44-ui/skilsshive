@@ -1,0 +1,37 @@
+.skeleton {
+  background: linear-gradient(90deg, #e1e2dc 25%, #eeefea 37%, #e1e2dc 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.sk-post-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.8rem;
+}
+
+.sk-post-lines {
+  flex: 1;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.sk-leader-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.6rem;
+}
