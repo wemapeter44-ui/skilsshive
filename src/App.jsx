@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Skills from './pages/Skills'
+import CreatePost from './pages/CreatePost'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -39,6 +40,7 @@ function App() {
         {session ? (
           <>
             <Link to="/home">Home</Link>
+            <Link to="/create">New post</Link>
             <Link to="/profile">Profile</Link>
             <Link to="/skills">Skills</Link>
             <button onClick={handleLogout}>Log out</button>
@@ -56,6 +58,7 @@ function App() {
         <Route path="/login" element={session ? <Navigate to="/home" replace /> : <Login />} />
         <Route path="/signup" element={session ? <Navigate to="/home" replace /> : <Signup />} />
         <Route path="/home" element={session ? <Home session={session} /> : <Navigate to="/login" replace />} />
+        <Route path="/create" element={session ? <CreatePost session={session} /> : <Navigate to="/login" replace />} />
         <Route path="/profile" element={session ? <Profile session={session} /> : <Navigate to="/login" replace />} />
         <Route path="/skills" element={session ? <Skills session={session} /> : <Navigate to="/login" replace />} />
       </Routes>
